@@ -11,6 +11,12 @@ sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf-8')
 import cgi
 form_data = cgi.FieldStorage(keep_blank_values = True)
 
+import os
+from pathlib import Path
+env_path = Path('.') / '.env'
+from dotenv import load_dotenv
+load_dotenv( dotenv_path = env_path, verbose = True )
+
 def print_html():
 
     print( '<!DOCTYPE html>' )
@@ -74,10 +80,10 @@ def main():
     global con, cur
     try:
        con = MySQLdb.connect(
-           host = '127.0.0.1',
-           user = 'kawada',
-           passwd = 'kawada',
-           db = 'keiji',
+           host = os.environ.get( 'keiji_db_host' ),
+           user = str(os.environ.get( 'keiji_db_user' )),
+           passwd = str(os.environ.get( 'keiji_db_pass' )),
+           db = str(os.environ.get( 'keiji_db_name' )),
            use_unicode = True,
            charset = 'utf8'
        )
@@ -93,7 +99,7 @@ def main():
         proceed_methods()
     else:
 
-        print_html()
+     print_html()
 
     cur.close()
     con.close()
